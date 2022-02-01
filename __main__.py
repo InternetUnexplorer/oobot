@@ -31,7 +31,7 @@ class OobClient(Client):
         # Respond if the message is in the oob channel or if we were mentioned
         is_mention = self.user.mentioned_in(message)
         is_in_oob_channel = message.channel.id == self.channel_id
-        if is_mention or is_in_oob_channel:
+        if is_mention or (is_in_oob_channel and random.randrange(10) > 4):
             await sleep(random.randrange(5))
             await self.oob(None if not is_mention else message)
 
