@@ -16,7 +16,7 @@ def verbose(*args) -> None:
 class OobClient(Client):
     # These delay values do not apply to replies to mentions.
     DELAY_MIN = 1  # 1 second
-    DELAY_MAX = 36 * 60 * 60  # 36 hours
+    DELAY_MAX = 72 * 60 * 60  # 72 hours
     DELAY_POW = 0.8  # delay = delay ^ 0.8
 
     def __init__(self, channel_id: int, **options) -> None:
