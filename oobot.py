@@ -3,7 +3,7 @@ from os import environ
 from random import randrange
 from typing import Optional
 
-from discord import Client, Game, Intents, Message, Status, TextChannel
+from discord import Client, DMChannel, Game, Intents, Message, Status, TextChannel
 
 
 def verbose(*args) -> None:
@@ -34,10 +34,17 @@ class OobClient(Client):
             message.channel if message else self.get_channel(self.channel_id)
         )
 
-        verbose(
-            f"sending an oob to #{channel.name}"
-            + (f" as a reply to {message.author}" if message else "")
+        # Get a human-friendly description of the channel.
+        channel_desc = (
+            "a DM"
+            if message and isinstance(message.channel, DMChannel)
+            else f"#{channel.name} in {channel.guild.name}"
         )
+
+        if message:
+            verbose(f"replying to {message.author} in {channel_desc}")
+        else:
+            verbose(f"sending an oob to {channel_desc}")
 
         # Send the message, spending a random amount of time "typing" to make
         # things a little more fun :).
@@ -102,13 +109,13 @@ class OobClient(Client):
         if message.author == self.user:
             return
 
-        # If the message mentions us directly, respond immediately.
-        if self.user.mentioned_in(message):
+        # Respond immediately if the message is a DM or mentions us directly.
+        if isinstance(message.channel, DMChannel) or self.user.mentioned_in(message):
             await self.oob(message)
             return
 
         # Otherwise, handle the message if it is in $DISCORD_CHANNEL.
-        elif message.channel.id == self.channel_id:
+        if message.channel.id == self.channel_id:
             # Reduce the delay by DELAY_POW and start a new delayed oob task.
             self.delay_secs = int(self.delay_secs**self.DELAY_POW)
             self.start_delayed_oob()
