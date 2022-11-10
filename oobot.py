@@ -3,7 +3,7 @@ from os import environ
 from random import randrange
 from typing import Optional
 
-from discord import Client, Status, Game, TextChannel, Message
+from discord import Client, Game, Intents, Message, Status, TextChannel
 
 
 def verbose(*args) -> None:
@@ -20,7 +20,7 @@ class OobClient(Client):
     DELAY_POW = 0.9  # delay = delay ^ 0.9
 
     def __init__(self, channel_id: int, **options) -> None:
-        super().__init__(**options)
+        super().__init__(intents=Intents(guilds=True, messages=True), **options)
         self.channel_id = channel_id
         self.delay_secs = self.DELAY_MAX
         self.delay_task = None
@@ -41,7 +41,7 @@ class OobClient(Client):
 
         # Send the message, spending a random amount of time "typing" to make
         # things a little more fun :).
-        with channel.typing():
+        async with channel.typing():
             await sleep(randrange(1, 5))
             if message:
                 await message.reply("oob")
@@ -110,7 +110,7 @@ class OobClient(Client):
         # Otherwise, handle the message if it is in $DISCORD_CHANNEL.
         elif message.channel.id == self.channel_id:
             # Reduce the delay by DELAY_POW and start a new delayed oob task.
-            self.delay_secs = int(self.delay_secs ** self.DELAY_POW)
+            self.delay_secs = int(self.delay_secs**self.DELAY_POW)
             self.start_delayed_oob()
 
 
