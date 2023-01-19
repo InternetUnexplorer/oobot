@@ -5,10 +5,12 @@ A Discord bot that goes "oob", to keep us company in #oob.
 ## Description
 
 oobot does two things:
+
 - oobot will reply "oob" when mentioned, regardless of channel.
-- oobot will periodically say "oob" in the specified channel.
+- oobot will periodically say "oob" in the specified channel(s).
 
 For the latter, oobot works as follows:
+
 - oobot will wait a random amount of time in the range of
   `[0.5*DELAY_MAX,DELAY_MAX)` seconds before sending an oob.
 - If a message arrives in the specified channel before the above time has
@@ -26,8 +28,10 @@ Replying to mentions happens immediately and is separate from the above delays.
 oobot requires [discord.py](https://discordpy.readthedocs.io/en/stable/).
 
 oobot accepts the following environment variables:
+
 - `DISCORD_TOKEN`: the bot token (required)
-- `DISCORD_CHANNEL`: the channel ID to periodically send oobs to (required)
+- `DISCORD_CHANNELS`: a comma-separated list of channel IDs to periodically send
+  oobs to (required)
 - `VERBOSE`: enables additional logging if set
 
 ## License
