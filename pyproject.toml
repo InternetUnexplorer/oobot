@@ -9,6 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 discord-py = "^2.2.2"
+aiohttp = "^3.8.4"
 
 
 [build-system]

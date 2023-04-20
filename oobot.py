@@ -1,4 +1,5 @@
 from asyncio import create_task, sleep
+from aiohttp import ClientSession
 from os import environ
 from random import randrange
 from typing import List, Optional
@@ -112,6 +113,18 @@ class OobClient(Client):
         # Never respond to our own messages.
         if message.author == self.user:
             return
+        
+        # Do not respond to webhook messages.
+        if message.webhook_id is not None:
+            return
+
+        # Report this user's oob to the oober.
+        # NOTE: Requires the OOBER_TOKEN environment variable to be set.
+        if "OOBER_TOKEN" in environ.keys() and message.content == "oob":
+            headers = { "Authorization": "Bearer " + environ["OOBER_TOKEN"] }
+            async with ClientSession() as session:
+                async with session.get('https://oob.ell.gay/') as response:
+                    await response.text()
 
         # Respond immediately if the message is a DM or mentions us.
         if isinstance(message.channel, DMChannel) or self.user.mentioned_in(message):
@@ -129,12 +142,16 @@ class OobClient(Client):
 
 if __name__ == "__main__":
     token = environ["DISCORD_TOKEN"]
+    oob_token = environ["OOBER_TOKEN"]
+
     channels = [
         int(channel_str.strip())
         for channel_str in environ["DISCORD_CHANNELS"].split(",")
     ]
     print(f"loaded configuration from environment:")
     print(f"     DISCORD_TOKEN=***")
+    print(f"     OOBER_TOKEN=***" if oob_token else "     OOBER_TOKEN is not set.")
     print(f"  DISCORD_CHANNELS={','.join(map(str, channels))}")
+
     print("connecting to Discord...")
     OobClient(channels).run(token)
