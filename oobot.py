@@ -123,7 +123,7 @@ class OobClient(Client):
         if "OOBER_TOKEN" in environ.keys() and message.content == "oob":
             headers = { "Authorization": "Bearer " + environ["OOBER_TOKEN"] }
             async with ClientSession() as session:
-                async with session.get('https://oob.ell.gay/') as response:
+                async with session.get(f'https://oob.ell.gay/report/{message.author.id}') as response:
                     await response.text()
 
         # Respond immediately if the message is a DM or mentions us.
