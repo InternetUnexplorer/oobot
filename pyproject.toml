@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "oobot"
+version = "0.1.0"
+description = "A Discord bot that goes \"oob\", to keep us company in #oob."
+authors = ["InternetUnexplorer <internetunexplorer@gmail.com>", "Elizabeth Urquhart <me@ell.gay>"]
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = "^3.10"
+discord-py = "^2.2.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
