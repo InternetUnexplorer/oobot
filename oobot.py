@@ -41,14 +41,17 @@ class OobClient(Client):
         else:
             verbose(f"sending a scheduled oob to {channel_desc}")
 
+        # 0.1% chance to send :alembic: instead (increases whimsy).
+        reply = "oob" if randrange(1000) != 0 else "\u2697"
+
         # Send the message, spending a random amount of time "typing" to make
         # things a little more fun :).
         async with channel.typing():
             await sleep(randrange(1, 5))
             if message:
-                await message.reply("oob")
+                await message.reply(reply)
             else:
-                await channel.send("oob")
+                await channel.send(reply)
 
     def schedule_oob(self, channel_id: int) -> None:
         """Schedule an oob to be sent in the future.
